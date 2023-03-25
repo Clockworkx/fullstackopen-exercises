@@ -5,11 +5,11 @@ const cors = require("cors");
 const app = express();
 const Person = require("./models/person");
 
-//app.use(cors());
+app.use(cors());
 
 app.use(express.json());
 
-//app.use(express.static("build"));
+app.use(express.static("build"));
 
 //app.use(morgan("tiny"));
 
@@ -68,6 +68,12 @@ app.post("/api/persons", async (request, response) => {
       error: "Number and or name of the person are missing",
     });
 
+  if (typeof body.number != "number") {
+    return response
+      .status(400)
+      .json({ error: "The number field does not contain a number" });
+  }
+
   const foundPerson = await Person.findOne({ name: body.name });
   if (foundPerson) {
     console.log("found existing Person", foundPerson);
@@ -97,9 +103,3 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`server started on port ${PORT}`);
 });
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min);
-}
