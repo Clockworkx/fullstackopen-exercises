@@ -9,7 +9,12 @@ const getAll = () => {
 
 const create = (person) => {
   const request = axios.post(baseUrl, person);
-  return request.then((response) => response.data);
+  return request
+    .then((response) => {
+      console.log("axios promise resolved");
+      return response.data;
+    })
+    .catch((error) => console.log("axios promise rejected", error));
 };
 
 const deletePerson = (id) => {
