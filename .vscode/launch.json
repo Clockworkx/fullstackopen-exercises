@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "name": "nodemon",
+            "program": "${workspaceFolder}\\part 3\\phonebook_server\\index.js",
+            "request": "launch",
+            "restart": true,
+            "runtimeExecutable": "nodemon",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "envFile": "${workspaceFolder}\\part 3\\phonebook_server\\.env"
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",

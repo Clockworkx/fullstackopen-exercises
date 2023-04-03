@@ -102,8 +102,6 @@ const App = () => {
 
     if (persons.some((person) => person.name === newName)) {
       let existingPerson = persons.find((person) => person.name === newName);
-
-      console.log("shouldnot");
       if (
         window.confirm(
           `${existingPerson.name} already exists in the phonebook, replace the old with the new number?`
@@ -115,8 +113,6 @@ const App = () => {
             const changedPersons = persons.map((p) =>
               p.id !== existingPerson.id ? p : { ...p, number: newNumber }
             );
-            console.log("then");
-
             setPersons(changedPersons);
             setNewName("");
             setNewNumber("");
@@ -157,13 +153,18 @@ const App = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("hi")) {
-      personService.deletePerson(id).then((deletedPerson) => {
-        window.alert("deleted person").catch((error) => {
-          window.alert("couldnt delete person");
+    let deletedPersonName = persons.find((person) => person.id === id).name;
+    console.log(persons);
+    if (window.confirm(`Do you really want to delete ${deletedPersonName}`)) {
+      personService
+        .deletePerson(id)
+        .then(() => {
+          window.alert(`succesfully deleted ${deletedPersonName}`);
+          setPersons(persons.filter((person) => person.id !== id));
+        })
+        .catch((error) => {
+          return window.alert(`could not delete ${deletedPersonName}`);
         });
-      });
-      setPersons(persons.filter((person) => person.id !== id));
     }
   };
 

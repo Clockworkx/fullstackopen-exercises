@@ -41,9 +41,13 @@
 //   return new Promise();
 // };
 
-async function test() {
-  return "testing";
-}
+// async function test() {
+//   return "testing";
+// }
 
-let request = test();
-request.then((data) => console.log(data));
+// let request = test();
+// request.then((data) => console.log(data));
+
+while (true) {
+  console.log(Math.random() * 255, "\n");
+}

@@ -13,6 +13,25 @@ app.use(express.static("build"));
 
 //app.use(morgan("tiny"));
 
+const requestLogger = (req, res, next) => {
+  console.log("Method:", req.method);
+  console.log("Path:  ", req.path);
+  console.log("Body:  ", req.body);
+  console.log("---");
+  next();
+};
+
+const errorHandler = (error, req, res, next) => {
+  console.log(error.message);
+
+  if (error.name == "CastError") {
+    res.status(400).json({ error: "incorrect format for phone number" });
+  }
+
+  next(error);
+};
+app.use(requestLogger);
+
 morgan.token("postData", (req, res) => {
   if (req.method === "POST") {
     // console.log(res);
@@ -21,7 +40,7 @@ morgan.token("postData", (req, res) => {
 });
 app.use(
   morgan(
-    ":method :url :status :req[content-length] - :response-time ms :postData"
+    ":method :url :status Req-Content-Length: :req[content-length] - :response-time ms :postData"
   )
 );
 
@@ -42,15 +61,16 @@ app.get("/info", (request, response) => {
     .catch((error) => console.log(error));
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  Person.findById(request.params.id).then((person) => {
-    if (!person) {
-      return response.status(404).end();
-    }
-    response.json(person);
-  });
-
-  //else// response.status(404).end()
+app.get("/api/persons/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (!person) {
+        return response.status(404).json({ error: "person was not found" });
+      }
+      response.json(person);
+    })
+    // .catch((error) => response.status(400).json({ error: "malformatted id" }));
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -68,7 +88,7 @@ app.post("/api/persons", async (request, response) => {
       error: "Number and or name of the person are missing",
     });
 
-  if (typeof body.number != "number") {
+  if (isNaN(request.body.number)) {
     return response
       .status(400)
       .json({ error: "The number field does not contain a number" });
@@ -95,9 +115,26 @@ app.post("/api/persons", async (request, response) => {
 });
 
 app.put("/api/persons/:id", (request, response) => {
+  const replacingPerson = {
+    name: request.body.name,
+    number: request.body.number,
+  };
+
   console.log("received put");
-  response.status(200).end();
+  Person.findByIdAndUpdate(request.params.id, replacingPerson, {
+    new: true,
+  }).then((updatedPerson) => {
+    response.json(updatedPerson);
+  });
 });
+
+const unknownEndpoint = (request, response) => {
+  return response.status(404).json({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

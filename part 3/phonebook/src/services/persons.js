@@ -8,18 +8,14 @@ const getAll = () => {
 };
 
 const create = (person) => {
-  const request = axios.post(baseUrl, person);
-  return request
-    .then((response) => {
-      console.log("axios promise resolved");
-      return response.data;
-    })
-    .catch((error) => console.log("axios promise rejected", error));
+  return axios.post(baseUrl, person).then((response) => {
+    console.log("axios promise resolved");
+    return response.data;
+  });
 };
 
 const deletePerson = (id) => {
-  const request = axios.delete(`${baseUrl}/${id}`);
-  return request.then((response) => response.data);
+  return axios.delete(`${baseUrl}/${id}`).then((response) => response.data);
 };
 
 const change = (id, person) => {
