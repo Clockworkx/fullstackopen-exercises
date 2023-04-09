@@ -116,11 +116,16 @@ const App = () => {
             setPersons(changedPersons);
             setNewName("");
             setNewNumber("");
+            setNotification({
+              message: `updated ${existingPerson.name}`,
+              style: "success",
+            });
+            setTimeout(() => setNotification({ message: null }), 5000);
           })
           .catch((error) => {
             console.log(error);
             setNotification({
-              message: `${existingPerson.name} is not found on the server`,
+              message: `error updating ${existingPerson.name}`,
               style: "error",
             });
             setTimeout(() => setNotification({ message: null }), 5000);
@@ -149,7 +154,11 @@ const App = () => {
         });
         setTimeout(() => setNotification({ message: null }), 5000);
       })
-      .catch((error) => console.log("create promise rejected", error));
+      .catch((error) => {
+        setNotification({ message: error.response.data.error, style: "error" });
+        console.log("create promise rejected", error, "res", error.response);
+        setTimeout(() => setNotification({ message: null }), 5000);
+      });
   };
 
   const handleDelete = (id) => {
