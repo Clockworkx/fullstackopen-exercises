@@ -26,7 +26,7 @@ const change = (id, person) => {
   return request.then((response) => response.data);
 };
 
-export default {
+module.exports = {
   getAll,
   create,
   deletePerson,
