@@ -1,0 +1,9 @@
+PUT  http://localhost:3001/api/blogs/6437694c7aa80f7c504ee6db
+Content-Type: application/json
+
+{
+    "title": "CodeReversing",
+    "author": "Some Guy",
+    "url": "https://www.codereversing.com/",
+    "likes": 1338
+}

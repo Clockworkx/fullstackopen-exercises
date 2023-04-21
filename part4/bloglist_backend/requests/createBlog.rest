@@ -1,0 +1,9 @@
+POST  http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "CodeReversing",
+    "author": "Some Guy",
+    "url": "https://www.codereversing.com/",
+    "likes": 1337
+}
